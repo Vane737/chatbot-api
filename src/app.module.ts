@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ClientesModule } from './clientes/clientes.module';
+import { ChatbotOpenaiModule } from './chatbot-openai/chatbot-openai.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         // }
       }),
      }),
+    ClientesModule,
+    ChatbotOpenaiModule,
   ],
 
 })
