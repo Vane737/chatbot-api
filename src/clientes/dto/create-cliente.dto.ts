@@ -13,16 +13,18 @@ export class CreateClienteDto {
     apellido?: string;
 
     @IsString()
-    @MinLength(8)
+    @MinLength(8)    
     telefono: string;
 
     @IsString()
     @MinLength(6)
-    ci: string;
+    @IsOptional()
+    ci?: string;
 
     @IsString()
     @IsEmail()
-    email: string;
+    @IsOptional()
+    email?: string;
 
     @IsString()
     @MinLength(2)

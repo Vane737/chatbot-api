@@ -65,7 +65,8 @@ export class ClientesService {
   async findByPhone(telefono: string) {
     const cliente = await this.clienteRepository.findOneBy({ telefono });
     if (!cliente) {
-      throw new NotFoundException(`El cliente con el teléfono ${telefono} no fue encontrado.`);
+
+      return null;
     }
     return cliente;
   }

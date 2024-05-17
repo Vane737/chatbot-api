@@ -9,8 +9,10 @@ export class Cliente {
     @Column('text')
     nombre: string
 
-    @Column('text')
-    apellido: string
+    @Column('text',{
+        unique: true, nullable: true
+    })
+    apellido: string| null
 
     @Column('text', {
         unique: true
@@ -18,17 +20,19 @@ export class Cliente {
     telefono: string
 
     @Column('text', {
-        unique: true
+        unique: true, nullable: true
     })
-    ci: string
+    ci: string | null
 
     @Column('text', {
-        unique: true
+        unique: true, nullable: true
     })
-    email: string
+    email: string | null
     
-    @Column('text')
-    direccion: string
+    @Column('text', {
+        unique: true, nullable: true
+    })
+    direccion: string | null
 
 
 }
