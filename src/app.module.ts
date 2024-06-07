@@ -3,11 +3,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientesModule } from './clientes/clientes.module';
 import { ChatbotOpenaiModule } from './chatbot-openai/chatbot-openai.module';
+import { VectorEntity } from './chatbot-openai/entities/vector.entity';
+import { Cliente } from './clientes/entities/cliente.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
+      name: 'primary',
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
@@ -29,9 +32,29 @@ import { ChatbotOpenaiModule } from './chatbot-openai/chatbot-openai.module';
         }
       }),
      }),
+     // Conexión a la base de datos de Supabase
+    TypeOrmModule.forRootAsync({
+      name: 'supabase',
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        url: configService.get('SUPABASE_HOST'),
+        // host: process.env.SUPABASE_HOST,
+        // port: +process.env.SUPABASE_PORT,
+        // database: process.env.SUPABASE_DATABASE,
+        // username: process.env.SUPABASE_USERNAME,
+        // password: process.env.SUPABASE_PASSWORD,
+        entities: [VectorEntity],
+        autoLoadEntities: true, // Carga automaticamente las entidades
+        synchronize: true,  // Realiza las migraciones automaticamente
+      }),
+     }),
     ClientesModule,
     ChatbotOpenaiModule,
   ],
+  providers: [TypeOrmModule],
 
 })
-export class AppModule {}
+export class AppModule {
+}

@@ -12,7 +12,7 @@ export class ClientesService {
   
   constructor( 
 
-    @InjectRepository(Cliente) 
+    @InjectRepository(Cliente, 'primary') 
     private readonly clienteRepository: Repository<Cliente>
   
   ) { }
