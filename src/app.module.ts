@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientesModule } from './clientes/clientes.module';
 import { ChatbotOpenaiModule } from './chatbot-openai/chatbot-openai.module';
-import { VectorEntity } from './chatbot-openai/entities/vector.entity';
+// import { VectorEntity } from './chatbot-openai/entities/vector.entity';
 import { Cliente } from './clientes/entities/cliente.entity';
 
 @Module({
@@ -45,7 +45,7 @@ import { Cliente } from './clientes/entities/cliente.entity';
         // database: process.env.SUPABASE_DATABASE,
         // username: process.env.SUPABASE_USERNAME,
         // password: process.env.SUPABASE_PASSWORD,
-        entities: [VectorEntity],
+        // entities: [VectorEntity],
         autoLoadEntities: true, // Carga automaticamente las entidades
         synchronize: true,  // Realiza las migraciones automaticamente
       }),

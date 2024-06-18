@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ChatbotOpenaiService } from './chatbot-openai.service';
 import { CreateChatbotOpenaiDto } from './dto/create-chatbot-openai.dto';
-import { VectorEntity } from './entities/vector.entity';
+// import { VectorEntity } from './entities/vector.entity';
 import * as path from 'path';
 
 
@@ -55,7 +55,7 @@ export class ChatbotOpenaiController {
     @Body('embedding') embedding: number[],
     @Body('title') title: string,
     @Body('body') body: string,
-  ): Promise<VectorEntity> {
+  ): Promise<any> {
     return this.chatbotOpenaiService.createVector(embedding, title, body);
   }
 
