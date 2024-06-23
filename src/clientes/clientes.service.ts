@@ -12,8 +12,7 @@ export class ClientesService {
   
   constructor( 
 
-    @InjectRepository(Cliente, 'primary') 
-    private readonly clienteRepository: Repository<Cliente>
+    @InjectRepository(Cliente, 'primary') private readonly clienteRepository: Repository<Cliente>
   
   ) { }
 
@@ -45,20 +44,16 @@ export class ClientesService {
   async update(id: number, updateClienteDto: UpdateClienteDto) {
     const cliente = await this.clienteRepository.findOneBy({ id });
 
-    console.log(cliente);
-    
+    console.log(cliente);    
     if (!cliente) {
       throw new NotFoundException(`Banco con el id ${id} no encontrado`);
     }
-
     // Actualiza las propiedades del cliente según el DTO
     if (updateClienteDto.nombre) {
       cliente.nombre = updateClienteDto.nombre;
-    }
-    
+    }    
     // Guarda el cliente actualizado
     await this.clienteRepository.save(cliente);
-
     return cliente;
   }
 

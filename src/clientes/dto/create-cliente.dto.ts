@@ -26,9 +26,4 @@ export class CreateClienteDto {
     @IsOptional()
     email?: string;
 
-    @IsString()
-    @MinLength(2)
-    @IsOptional()
-    direccion?: string;
-
 }
