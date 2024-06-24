@@ -12,4 +12,6 @@ export class CaracteristicaController {
         const caracteristica = await this.caracteristicaService.create(createCaracteristicaDto);
         return caracteristica
     }
+
+    
 }

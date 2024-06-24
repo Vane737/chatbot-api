@@ -26,7 +26,14 @@ export class CaracteristicaService {
      ...createCaracteristicaDto,      
      propiedad
     });
-    return await this.caracteristicaRepository.save(caracteristica);
+    await this.caracteristicaRepository.save(caracteristica);
+    
+    var descripcion =  `${propiedad.descripcion}. Tiene ${caracteristica.descripcion}`;
+    propiedad.descripcion = descripcion;
+    await this.propiedadRepository.save(propiedad)
+
+    return caracteristica;
+
   }  
   
   
