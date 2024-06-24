@@ -14,6 +14,9 @@ import * as path from 'path';
 import { marked } from 'marked'; // Para convertir Markdown a texto plano
 // import { RealtimeClient } from '@supabase/realtime-js';
 import { createClient } from '@supabase/supabase-js';
+import { TwilioService } from 'src/twilio/twilio.service';
+import { OpenaiService } from 'src/openai/openai.service';
+import { SupabaseService } from 'src/supabase/supabase.service';
 // import TurndownService from 'turndown';
 const TurndownService = require('turndown');
 interface Options {
@@ -25,140 +28,77 @@ interface Options {
 @Injectable()
 export class ChatbotOpenaiService {
 
-  private openai = new OpenAI({ 
-    apiKey: process.env.OPENAI_API_KEY
-  })
-  private twilioClient: Twilio;
+
+
   private supabaseClient;
   constructor( 
 
     @InjectRepository(Cliente, 'primary') 
     private readonly clienteRepository: Repository<Cliente>,
-    // @InjectRepository(VectorEntity, 'supabase') 
-    // private readonly vectorRepository: Repository<VectorEntity>,
-    private readonly clientesService: ClientesService
+    private readonly twilioService: TwilioService,
+    private readonly clientesService: ClientesService,
+    private readonly openaiService: OpenaiService,
+    private readonly supabaseService: SupabaseService,
+
     
   ) { 
-    this.twilioClient = new Twilio(
-      process.env.TWILIO_ACCOUNT_SID,
-      process.env.TWILIO_AUTH_TOKEN
-    );
     this.supabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
   }
 
-  async saludo({ prompt , telefono }: CreateChatbotOpenaiDto ) {
-    // const { nombre }: Cliente = await this.clientesService.findByPhone(telefono);
-    return await this.requestSaludo(this.openai, { prompt, nombre:'Vivian' });
+ 
+  async saludo({ prompt, telefono }: CreateChatbotOpenaiDto) {
+    const response = await this.openaiService.generateResponse(prompt, 'Vivian');
+    return {response};
+  }
+  
+  async generateEmbedding( text: string ) {
+
+    const response = await this.openaiService.generateEmbedding(text);
+
+    return response;
   }
 
   async enviarMensajeTwilio(numeroDestino: string, msj: string, nombre: string) {
     try {
       const cliente = await this.clientesService.findByPhone(numeroDestino);
-      if (cliente === null ) {
-        this.clientesService.create({nombre, telefono: numeroDestino})
+      // Verifica si existe el cliente
+      if (!cliente) {
+        await this.clientesService.create({ nombre, telefono: numeroDestino });
       }
-      const {message} =  await this.requestSaludo(this.openai, {prompt:msj, nombre})
+      // Crea la respuesta personalizada para el usuario
+      const  message  = await this.openaiService.generateResponse(msj, nombre);
+      // Envia el mensaje de respuesta al cliente
+      await this.twilioService.sendMessage(numeroDestino, message);
 
-      console.log(numeroDestino);
-      await this.twilioClient.messages.create({
-        body: message,
-        from: 'whatsapp:+14155238886',
-        to: `whatsapp:+${numeroDestino}`
-      });
-      console.log('Mensaje enviado con éxito.');
     } catch (error) {
-      console.error('Error al enviar el mensaje:', error);
+      console.error('Ha ocurrido un error:', error);
     }
   }
 
-  create(createChatbotOpenaiDto: CreateChatbotOpenaiDto) {
-    return 'This action adds a new chatbotOpenai';
-  }
-
-  findAll() {
-    return `This action returns all chatbotOpenai`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} chatbotOpenai`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chatbotOpenai`;
-  }
-
-
-  requestSaludo = async( openai: OpenAI, { prompt, nombre }: Options ) => {
-
-    const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [{ 
-            role: "system", 
-            content: `Eres un asistente que ayuda a los usuarios respondiendo sus preguntas de manera clara y respetuosa. Puedes dirigirte al usuario por su nombre: ${nombre}.` 
-            },
-            {
-              role: "user", 
-              content: `${prompt}` 
-            }
-        ],
-        temperature: 0.2,
-      });
-
-
-    return { message: response.choices[0].message.content };
-  }
-
-  // async createVector(embedding: number[], title: string, body: string): Promise<VectorEntity> {
-  //   const entity = this.vectorRepository.create({ embedding,  title, body });
-  //   return this.vectorRepository.save(entity);
-  // }
-
-  async createVector(
+  async createVector( 
     embedding: number[],
     title: string,
     body: string,
-  ): Promise<any> {
-    const { data, error } = await this.supabaseClient
-      .from('vector_entity')
-      .insert([{ title, body, embedding }]);
+  ): Promise<object> {
+    try {
 
-    if (error) throw error;
-    return data;
-  }
-
-  async generateEmbedding(text: string): Promise<any> {
-    const response = await this.openai.embeddings.create({
-      model: 'text-embedding-ada-002',
-      input: text,
-      encoding_format: "float",
-    });
-    console.log('ESTA ES LA RESPUESTA DE EMBEDDING', response.data[0].embedding);
-    
-    return response.data[0].embedding;
-  }
-
-  async createVectorMd(
-    fileName: string,
-    plainText: string,
-    embedding: number[]
-  ): Promise<void> {
-    const { data, error } = await this.supabaseClient
-      .from('vector_entity')
-      .insert([{ title: fileName, body: plainText, embedding }]);
-
-    if (error) throw error;
-    return data;
+      this.supabaseService.insertVector(embedding, title, body);
+      return {message: "Registro insertado con exito"}
+      
+    } catch {
+      return {message: "Error!, No se pudo realizar la inserción con exito"}
+    }
   }
 
 
-  // async createVectorMd(embedding: any, fileName: string, plainText: string): Promise<void> {
-  //   const entity = this.vectorRepository.create({
-  //     embedding,
-  //     title: fileName,
-  //     body: plainText
-  //   });
-  //   await this.vectorRepository.save(entity);
-  // }
+  async findSimilarVectors(query: string): Promise<any> {
+    const queryEmbedding = await await this.openaiService.generateEmbedding(query);
+    const matches = await this.supabaseService.matchDocuments(queryEmbedding, 0.78, 10);
+  
+    console.log(matches);
+
+    return matches;
+  }
 
 
   async processMarkdownFilesInDirectory(directoryPath: string): Promise<void> {
@@ -180,10 +120,10 @@ export class ChatbotOpenaiService {
                 for (const segment of markdownSegments) {
                     const plainText = this.convertMarkdownToPlainText(segment);
                     console.log(plainText);
-                    const embedding: number[] = await this.generateEmbedding(plainText);
+                    const embedding: number[] = await this.openaiService.generateEmbedding(plainText);
                     console.log('Este es el embedding', embedding);
                     
-                    await this.createVectorMd( file, plainText, embedding);
+                    await this.supabaseService.insertVector(embedding, file, plainText);
                 }
         }
       }
@@ -213,22 +153,5 @@ export class ChatbotOpenaiService {
 }
 
 
-async findSimilarVectors(query: string): Promise<any> {
-  const queryEmbedding = await this.generateEmbedding(query);
-
-  const { data, error } = await this.supabaseClient.rpc('match_documents', {
-    query_embedding: queryEmbedding,
-    match_threshold: 0.78,
-    match_count: 10,
-  });
-
-  if (error) {
-    console.error('Error searching for matches:', error);
-    throw new Error('Error searching for matches');
-  }
-  
-  console.log(data);
-  return data;
-}
 
 }
