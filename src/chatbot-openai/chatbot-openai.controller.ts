@@ -10,27 +10,18 @@ export class ChatbotOpenaiController {
   constructor(private readonly chatbotOpenaiService: ChatbotOpenaiService) {}
 
   @Post('saludo')
-  saludoCordial(@Body() createChatbotOpenaiDto: CreateChatbotOpenaiDto) {
-    return this.chatbotOpenaiService.saludo(createChatbotOpenaiDto);
+  async saludoCordial(@Body() createChatbotOpenaiDto: CreateChatbotOpenaiDto) {
+    return await this.chatbotOpenaiService.saludo(createChatbotOpenaiDto);
   }
 
   @Post('twilio')
   async handleWebhook(@Body() body: any) {
-    try {
-      console.log("req ->", body);
       
-
-      
+    console.log("req ->", body);
       const message = body.Body;
-
       await this.chatbotOpenaiService.enviarMensajeTwilio(body.WaId, message, body.ProfileName);
-      return { ok: true, msg: "Mensaje enviado con éxito" };
-    } catch (error) {
-      console.error("Error:", error);
-      return { ok: false, msg: "Error al procesar la solicitud" };
-    }
-  }
 
+  }
 
   @Post('embedding')
   async createEmbedding(@Body('text') text: string): Promise<any> {
@@ -48,15 +39,13 @@ export class ChatbotOpenaiController {
     }
   }
 
-
-  
   @Post('vector')
   async createVector(
     @Body('embedding') embedding: number[],
     @Body('title') title: string,
     @Body('body') body: string,
   ): Promise<any> {
-    return this.chatbotOpenaiService.createVector(embedding, title, body);
+    return await this.chatbotOpenaiService.createVector(embedding, title, body);
   }
 
   @Post('find-similar')
@@ -67,17 +56,17 @@ export class ChatbotOpenaiController {
 
   @Get()
   findAll() {
-    return this.chatbotOpenaiService.findAll();
+    return "";
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.chatbotOpenaiService.findOne(+id);
+    return "";
   }
 
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.chatbotOpenaiService.remove(+id);
+    return "";
   }
 }

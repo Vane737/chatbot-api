@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientesModule } from './clientes/clientes.module';
 import { ChatbotOpenaiModule } from './chatbot-openai/chatbot-openai.module';
 // import { VectorEntity } from './chatbot-openai/entities/vector.entity';
+
 import { Cliente } from './clientes/entities/cliente.entity';
 import { ConsultaModule } from './consulta/consulta.module';
 import { ConversacionModule } from './conversacion/conversacion.module';
@@ -14,9 +16,16 @@ import { ImagenModule } from './imagen/imagen.module';
 import { InmuebleModule } from './inmueble/inmueble.module';
 
 
+import { TwilioModule } from './twilio/twilio.module';
+import { OpenaiModule } from './openai/openai.module';
+import { SupabaseModule } from './supabase/supabase.module';
+
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      load: [configuration],
+      isGlobal: true, // Hace que el ConfigModule esté disponible globalmente
+    }),
     TypeOrmModule.forRootAsync({
       name: 'primary',
       imports: [ConfigModule],
@@ -60,7 +69,6 @@ import { InmuebleModule } from './inmueble/inmueble.module';
         synchronize: true,  // Realiza las migraciones automaticamente
       }),
      }),
-     
     ClientesModule,
     ChatbotOpenaiModule,
     ConsultaModule,
@@ -70,6 +78,9 @@ import { InmuebleModule } from './inmueble/inmueble.module';
     CaracteristicaModule,
     ImagenModule,
     InmuebleModule,
+    TwilioModule,
+    OpenaiModule,
+    SupabaseModule,
   ],
   providers: [TypeOrmModule],
 
