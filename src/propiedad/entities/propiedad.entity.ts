@@ -24,9 +24,6 @@ export class Propiedad{
     superficie: string
 
     @Column({ type: 'text' })
-    pisos: string
-
-    @Column({ type: 'text' })
     precio: string
     
     @Column({ type: 'enum', enum: ['Alquiler', 'Venta'] }) 
