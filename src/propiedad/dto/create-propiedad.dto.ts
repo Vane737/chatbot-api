@@ -25,10 +25,6 @@ export class CreatePropiedadDto {
 
     @IsString()
     @IsNotEmpty()
-    pisos: string;
-
-    @IsString()
-    @IsNotEmpty()
     precio: string;
 
     @IsEnum(Tipo)

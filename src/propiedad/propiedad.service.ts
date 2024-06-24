@@ -29,9 +29,10 @@ export class PropiedadService {
     await this.propiedadRepository.save(propiedad)
 
     var descripcion = `En ${propiedad.tipo} ${propiedad.inmueble.nombre} ` + 
-    `con superficie de ${propiedad.superficie},ccuenta con ${propiedad.pisos} pisos ` + 
-    `en la direccion ${propiedad.direccion} ` + 
-    `A ${propiedad.precio} `;
+    `con superficie de ${propiedad.superficie} ` + 
+    `direccion ${propiedad.direccion} ` + 
+    `A ${propiedad.precio} cuenta con `;
+
 
     propiedad.descripcion = descripcion;
     await this.propiedadRepository.save(propiedad)
