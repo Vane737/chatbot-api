@@ -1,49 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { CreateChatbotOpenaiDto } from './dto/create-chatbot-openai.dto';
-import { Cliente } from 'src/clientes/entities/cliente.entity';
-import { Repository } from 'typeorm';
-import { Twilio } from 'twilio';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ClientesService } from 'src/clientes/clientes.service';
-import {OpenAI} from 'openai';
-// import { VectorEntity } from './entities/vector.entity';
-import { OpenAIResponse } from './interfaces/embedding.interface';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-
-import { marked } from 'marked'; // Para convertir Markdown a texto plano
-// import { RealtimeClient } from '@supabase/realtime-js';
-import { createClient } from '@supabase/supabase-js';
+import { CreateChatbotOpenaiDto } from './dto/create-chatbot-openai.dto';
+import { ClientesService } from 'src/clientes/clientes.service';
 import { TwilioService } from 'src/twilio/twilio.service';
 import { OpenaiService } from 'src/openai/openai.service';
 import { SupabaseService } from 'src/supabase/supabase.service';
-// import TurndownService from 'turndown';
-const TurndownService = require('turndown');
-interface Options {
-  prompt: string;
-  nombre: string;
-}
 
 
 @Injectable()
 export class ChatbotOpenaiService {
 
-
-
-  private supabaseClient;
   constructor( 
-
-    @InjectRepository(Cliente, 'primary') 
-    private readonly clienteRepository: Repository<Cliente>,
-    private readonly twilioService: TwilioService,
     private readonly clientesService: ClientesService,
+    private readonly twilioService: TwilioService,
     private readonly openaiService: OpenaiService,
-    private readonly supabaseService: SupabaseService,
-
-    
-  ) { 
-    this.supabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-  }
+    private readonly supabaseService: SupabaseService
+  ) {}
 
  
   async saludo({ prompt, telefono }: CreateChatbotOpenaiDto) {
@@ -75,22 +48,6 @@ export class ChatbotOpenaiService {
     }
   }
 
-  async createVector( 
-    embedding: number[],
-    title: string,
-    body: string,
-  ): Promise<object> {
-    try {
-
-      this.supabaseService.insertVector(embedding, title, body);
-      return {message: "Registro insertado con exito"}
-      
-    } catch {
-      return {message: "Error!, No se pudo realizar la inserción con exito"}
-    }
-  }
-
-
   async findSimilarVectors(query: string): Promise<any> {
     const queryEmbedding = await await this.openaiService.generateEmbedding(query);
     const matches = await this.supabaseService.matchDocuments(queryEmbedding, 0.78, 10);
@@ -99,6 +56,9 @@ export class ChatbotOpenaiService {
 
     return matches;
   }
+
+
+
 
 
   async processMarkdownFilesInDirectory(directoryPath: string): Promise<void> {
@@ -141,7 +101,6 @@ export class ChatbotOpenaiService {
                               .replace(/\*/g, '')      // Elimina los asteriscos
                               .replace(/\n+/g, ' ')    // Reemplaza las nuevas líneas por espacios
                               .trim();   
-    // const plainText = turndownService.turndown(htmlContent);
     return plainText;
   }
 
@@ -151,7 +110,6 @@ export class ChatbotOpenaiService {
     // Elimina los segmentos vacíos o que contengan solo espacios en blanco
     return segments.filter(segment => segment.trim() !== '' &&  segment.trim() !== '=========');
 }
-
 
 
 }
