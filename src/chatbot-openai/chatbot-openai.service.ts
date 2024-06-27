@@ -112,7 +112,8 @@ export class ChatbotOpenaiService {
       console.log("Esto me devuelve la funcion numero", jsonResponse.id_propiedad);
 
       const urlPdf = await this.pdfService.generatePdf(data);
-      return urlPdf;
+      await this.enviarMensajeTwilioPdf(urlPdf, cliente)
+      return "cita agendada";
     } else {
       console.log(response);
       return response;
@@ -256,7 +257,7 @@ export class ChatbotOpenaiService {
 
   async enviarMensajeTwilio(numeroDestino: string, msj: string, nombre: string) {
     try {
-      const mediaUrl = "https://edwardsib.org/ourpages/auto/2015/9/28/51403017/Cuentos%20Infantiles.pdf"
+      const mediaUrl = ""
       let cliente = await this.clientesService.findByPhone(numeroDestino);
       if (!cliente) {
         cliente = await this.clientesService.create({ nombre, telefono: numeroDestino });        
@@ -267,7 +268,22 @@ export class ChatbotOpenaiService {
       const  message  = await this.generarCamino(msj, cliente.id);
       
       //const  message  = await this.openaiService.generateResponse(msj, nombre);
-      await this.twilioService.sendMessage(numeroDestino, message, mediaUrl);
+      await this.twilioService.sendMessage(numeroDestino, message);
+
+    } catch (error) {
+      console.error('Ha ocurrido un error:', error);
+    }
+  }
+
+
+  async enviarMensajeTwilioPdf(urlPdf:  string, cliente: Cliente) {
+    try {
+      
+      
+      console.log(cliente);
+
+      //const  message  = await this.openaiService.generateResponse(msj, nombre);
+      await this.twilioService.sendMessageUrl(cliente.telefono, "", urlPdf);
 
     } catch (error) {
       console.error('Ha ocurrido un error:', error);

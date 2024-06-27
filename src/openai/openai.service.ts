@@ -66,7 +66,7 @@ export class OpenaiService {
           role: 'system',
           content: `Eres un asistente virtual para ayudar a comprar o alquilar viviendas 
           como departamentos y casas,eres un buen vender,si te doy varias opciones de 
-          propiedades utiliza las primeras 2 y detallada sus caracteristicas`,
+          propiedades utiliza las primeras 2 y detalla la mitad de sus caracteristicas`,
         },
         {
           role: 'user',

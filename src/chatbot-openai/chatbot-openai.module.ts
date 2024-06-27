@@ -13,10 +13,11 @@ import { SupabaseService } from 'src/supabase/supabase.service';
 import { ConversacionService } from 'src/conversacion/conversacion.service';
 import { ConversacionModule } from 'src/conversacion/conversacion.module';
 import { ConsultaModule } from 'src/consulta/consulta.module';
+import { PdfService } from 'src/pdf/pdf.service';
 
 @Module({
   controllers: [ChatbotOpenaiController],
-  providers: [ChatbotOpenaiService, ClientesService, TwilioService, OpenaiService, SupabaseService],
+  providers: [ChatbotOpenaiService, ClientesService, TwilioService, OpenaiService, SupabaseService, PdfService],
   imports: [
     TypeOrmModule.forFeature([Cliente], 'primary'), // Repositorio para la conexión primaria
     // TypeOrmModule.forFeature([VectorEntity], 'supabase'), // Repositorio para la conexión de Supabase
