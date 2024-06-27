@@ -61,6 +61,7 @@ export class ChatbotOpenaiService {
   async generarRespuesta(text: string,clave: string,conversacion: Conversacion,cliente: Cliente){
     let response: string;
     let jsonResponse: any;
+    let jsonPropiedad: any;
     let prompt: string;
     let bandera: boolean = true;
 
@@ -95,9 +96,23 @@ export class ChatbotOpenaiService {
     if (clave === 'cita' && response.includes('Cita Agendada')) {
 
       jsonResponse = await this.openaiService.numero(response);
+      
+      const desc = await this.supabaseService.getBodyByIdPropiedades(jsonResponse.id_propiedad);
+      
+      jsonPropiedad = await this.openaiService.customJson(desc);
+      
+      const data = {
+        nombreAgente: "Ronald Lopez Figueroa",
+        numeroAgente: "65068987",
+        descripcion: jsonPropiedad.descripcion, 
+        direccion: jsonPropiedad.lugar,
+        fecha: jsonResponse.fecha,
+        hora: jsonResponse.hora
+      }
+      console.log("Esto me devuelve la funcion numero", jsonResponse.id_propiedad);
 
-      console.log("Esto me devuelve la funcion numero", jsonResponse);
-      return jsonResponse;
+      const urlPdf = await this.pdfService.generatePdf(data);
+      return urlPdf;
     } else {
       console.log(response);
       return response;

@@ -39,6 +39,8 @@ export class PdfService {
         } catch (uploadErr) {
           reject(uploadErr);
         }
+        console.log('El pdf se ha generado con exito');
+        resolve(res.filename); // Devuelve la ruta del archivo guardado
       });
     });
   }
