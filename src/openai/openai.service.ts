@@ -86,12 +86,13 @@ export class OpenaiService {
         {
           role: 'system',
           content: `De la informacion que te estoy pasando necesito que me devuelvas en formato json
-          la hora, la fecha y el numero de la propiedad, solo esass 3 cosas, ninguna palabra de mas de esta forma
+          la hora, la fecha y el numero de la propiedad, solo esass 3 cosas, ninguna palabra de mas de esta forma la fecha y hora tendran el siguiente formato como ejemplo para la fecha 30 de junio de 2024
+          y para la hora 10:00 AM
           {
             "Hora": "",
             "Fecha": "",
-            "Numero de Propiedad": 
-            }`,
+            "id_propiedad": 
+          }`,
         },
         {
           role: 'user',
@@ -104,6 +105,28 @@ export class OpenaiService {
 
   }
 
+  async customJson(prompt: string){
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-3.5-turbo-0125',
+      messages: [
+        {
+          role: 'system',
+          content: `De la informacion que te estoy pasando necesito que me devuelvas un json con un resumen de la descripcion de la propiedad y el lugar en donde se encuentra  
+          {
+            "descripcion": "",
+            "lugar": "",
+          }`,
+        },
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      temperature: 0.2,
+    });
+    return response.choices[0].message.content;
+
+  }
   
 
   async generateEmbedding(text: string): Promise<any> {

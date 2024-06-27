@@ -34,7 +34,7 @@
             text-align: left;
         }
         .highlight {
-            color: rgb(48, 20, 207);
+            color: rgb(33, 29, 53);
         }
     </style>
 </head>
@@ -44,15 +44,15 @@
         <h1>Confirmación de Cita Inmobiliaria</h1>
         <p>Estimado/a Cliente,</p>
         <p>Gracias por su interés en nuestros servicios inmobiliarios. Nos complace confirmar su cita para ver el inmueble.</p>
-        <p class="highlight">Nombre del agente: {{ agentName }}</p>
-        <p class="highlight">Número del agente: {{ agentNumber }}</p>
-        <p class="highlight">Descripción de la casa: {{ houseDescription }}</p>
-        <p class="highlight">Dirección de la casa: {{ houseAddress }}</p>
-        <p class="highlight">Fecha y hora de la cita: {{ appointmentDateTime }}</p>
-        
+        <p class="highlight">Fecha : {{ fecha }}</p>
+        <p class="highlight">Hora : {{ hora }}</p>
+        <p class="highlight">Dirección de la casa: {{ direccion }}</p>
+        <p class="highlight">Agente Inmobiliario: {{ nombreAgente }}</p>
+        <p class="highlight">Número del agente: {{ numeroAgente }}</p>
+        <p class="highlight">Descripción de la casa: {{ descripcion }}</p>
         <p>Por favor, no dude en ponerse en contacto con nosotros si tiene alguna pregunta o necesita más información.</p>
         <p>Saludos cordiales,</p>
-        <p>Equipo de Inmobiliaria Ejemplo</p>
+        <p>Equipo de Inmobiliaria <span style="color:red;">REMAX</span></p>
     </div>
 </body>
 </html>

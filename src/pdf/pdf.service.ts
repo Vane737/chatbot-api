@@ -27,6 +27,7 @@ export class PdfService {
         if (err) {
           return reject(err);
         }
+        console.log('El pdf se ha generado con exito');
         resolve(res.filename); // Devuelve la ruta del archivo guardado
       });
     });

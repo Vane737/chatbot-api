@@ -38,6 +38,20 @@ export class SupabaseService {
       }
     }
 
+    async getBodyByIdPropiedades(idPropiedades: number): Promise<string> {
+      const { data, error } = await this.supabaseClient
+        .from('propiedades')
+        .select('body')
+        .eq('id_propiedades', idPropiedades)
+        .single();
+      if (error) {
+        console.error('Error fetching body:', error);
+        throw new Error('Error fetching body');
+      }
+  
+      return data ? data.body : "";
+    }
+
     async matchDocuments(queryEmbedding: number[], matchThreshold: number, matchCount: number): Promise<any> {
         const { data, error } = await this.supabaseClient.rpc('match_propiedades', {
           query_embedding: queryEmbedding,
