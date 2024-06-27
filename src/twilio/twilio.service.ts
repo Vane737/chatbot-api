@@ -21,14 +21,15 @@ export class TwilioService {
     this.twilioClient = new Twilio(accountSid, authToken);
   }
 
-  async sendMessage(numeroDestino: string, message: string) {
+  async sendMessage(numeroDestino: string, message: string, mediaUrl: string) {
     try {
 
       console.log(numeroDestino);
       await this.twilioClient.messages.create({
         body: message,
         from: 'whatsapp:+14155238886',
-        to: `whatsapp:+${numeroDestino}`
+        to: `whatsapp:+${numeroDestino}`,
+        mediaUrl: [mediaUrl]
       });
       console.log('Mensaje enviado con éxito.');
     } catch (error) {

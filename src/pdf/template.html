@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Cita</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .content {
+            margin: 50px auto;
+            padding: 20px;
+            max-width: 600px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 0 0 20px 0;
+        }
+        h1 {
+            color: #000; /* Cambio el color a negro */
+        }
+        h2 {
+            color: red; /* REMAX en rojo */
+            font-size: 32px; /* Tamaño más grande */
+        }
+        p {
+            font-size: 14px;
+            color: #34495e;
+            text-align: left;
+        }
+        .highlight {
+            color: rgb(48, 20, 207);
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h2>REMAX</h2> <!-- Título REMAX en rojo y más grande -->
+        <h1>Confirmación de Cita Inmobiliaria</h1>
+        <p>Estimado/a Cliente,</p>
+        <p>Gracias por su interés en nuestros servicios inmobiliarios. Nos complace confirmar su cita para ver el inmueble.</p>
+        <p class="highlight">Nombre del agente: {{ agentName }}</p>
+        <p class="highlight">Número del agente: {{ agentNumber }}</p>
+        <p class="highlight">Descripción de la casa: {{ houseDescription }}</p>
+        <p class="highlight">Dirección de la casa: {{ houseAddress }}</p>
+        <p class="highlight">Fecha y hora de la cita: {{ appointmentDateTime }}</p>
+        
+        <p>Por favor, no dude en ponerse en contacto con nosotros si tiene alguna pregunta o necesita más información.</p>
+        <p>Saludos cordiales,</p>
+        <p>Equipo de Inmobiliaria Ejemplo</p>
+    </div>
+</body>
+</html>

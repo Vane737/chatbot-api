@@ -10,7 +10,7 @@ import { ConversacionService } from 'src/conversacion/conversacion.service';
 import { Conversacion } from 'src/conversacion/entities/conversacion.entity';
 import { Cliente } from 'src/clientes/entities/cliente.entity';
 import { ConsultaService } from 'src/consulta/consulta.service';
-
+import { PdfService } from 'src/pdf/pdf.service';
 
 @Injectable()
 export class ChatbotOpenaiService {
@@ -236,12 +236,18 @@ export class ChatbotOpenaiService {
 
   async enviarMensajeTwilio(numeroDestino: string, msj: string, nombre: string) {
     try {
-      const cliente = await this.clientesService.findByPhone(numeroDestino);
+      const mediaUrl = "https://edwardsib.org/ourpages/auto/2015/9/28/51403017/Cuentos%20Infantiles.pdf"
+      let cliente = await this.clientesService.findByPhone(numeroDestino);
       if (!cliente) {
-        await this.clientesService.create({ nombre, telefono: numeroDestino });
+        cliente = await this.clientesService.create({ nombre, telefono: numeroDestino });        
       }
-      const  message  = await this.openaiService.generateResponse(msj, nombre);
-      await this.twilioService.sendMessage(numeroDestino, message);
+      
+      console.log(cliente);
+      console.log(msj);
+      const  message  = await this.generarCamino(msj, cliente.id);
+      
+      //const  message  = await this.openaiService.generateResponse(msj, nombre);
+      await this.twilioService.sendMessage(numeroDestino, message, mediaUrl);
 
     } catch (error) {
       console.error('Ha ocurrido un error:', error);
