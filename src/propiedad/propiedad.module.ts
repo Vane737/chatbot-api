@@ -8,9 +8,11 @@ import { Caracteristica } from 'src/caracteristica/entities/caracteristica.entit
 import { Cita } from 'src/cita/entities/cita.entity';
 import { Imagen } from 'src/imagen/entities/imagen.entity';
 import { Inmueble } from 'src/inmueble/entities/inmueble.entity';
+import { SupabaseService } from 'src/supabase/supabase.service';
+import { OpenaiService } from 'src/openai/openai.service';
 
 @Module({
-  providers: [PropiedadService],
+  providers: [PropiedadService, OpenaiService, SupabaseService],
   controllers: [PropiedadController],
   imports: [
     TypeOrmModule.forFeature([Propiedad,Cita,Caracteristica,Inmueble,Imagen], 'primary'),

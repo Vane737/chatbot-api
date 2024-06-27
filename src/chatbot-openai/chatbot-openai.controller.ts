@@ -8,6 +8,17 @@ import * as path from 'path';
 export class ChatbotOpenaiController {
   constructor(private readonly chatbotOpenaiService: ChatbotOpenaiService) {}
 
+  @Post('consulta/:id')
+  async consulta(@Body('query') text: string,@Param('id') id: number){
+    try {
+      const responseText = await this.chatbotOpenaiService.generarCamino(text,id);
+      return responseText;
+    } catch (error) {
+      console.error('Error handling query:', error);
+      return { message: 'Hubo un error al procesar tu consulta. Por favor, intenta nuevamente.' };
+    }
+  }
+
   @Post('saludo')
   async saludoCordial(@Body() createChatbotOpenaiDto: CreateChatbotOpenaiDto) {
     return await this.chatbotOpenaiService.saludo(createChatbotOpenaiDto);
@@ -21,6 +32,12 @@ export class ChatbotOpenaiController {
   @Post('find-similar')
   async findSimilar(@Body('query') query: string) {
     const results = await this.chatbotOpenaiService.findSimilarVectors(query);
+    return results;
+  }
+
+  @Post('compararEmbedding')
+  async compararEmbedding(@Body('query') query: string) {
+    const results = await this.chatbotOpenaiService.compararEmbedding(query);
     return results;
   }
   

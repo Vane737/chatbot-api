@@ -9,10 +9,13 @@ export class Consulta{
     id: number
 
     @Column('text')
-    pregunta: string
+    rol: string
 
-    @Column('text',{nullable: true})
-    respuesta: string| null
+    @Column('text')
+    body: string
+
+    @Column({ type: 'boolean', default: false })
+    esCasa: boolean;
 
     @Column({ type: 'timestamp' })
     fecha: Date;
