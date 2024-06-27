@@ -14,7 +14,7 @@ export class OpenaiService {
 
   async generateResponse(prompt: string, nombre: string): Promise<string> {
     const response = await this.openai.chat.completions.create({
-      model: 'c',
+      model: 'text-embedding-ada-002',
       messages: [
         {
           role: 'system',
