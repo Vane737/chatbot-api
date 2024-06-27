@@ -2,17 +2,35 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 
+
+import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
+
+
+
 @Injectable()
 export class OpenaiService {
   private openai: OpenAI;
+  private llm: ChatOpenAI;
+  private embeddings: OpenAIEmbeddings;
   
   constructor( private readonly configService: ConfigService ) {
     const apiKey = this.configService.get<string>('openai.apiKey');
     this.openai = new OpenAI({ apiKey });
+
+    this.llm = new ChatOpenAI({
+      openAIApiKey: apiKey,
+      modelName: 'gpt-3.5-turbo',
+      temperature: 0.9,
+    });
+
+    // Configuración de OpenAI para embeddings
+    this.embeddings = new OpenAIEmbeddings({
+      openAIApiKey: apiKey,
+    });
   }
-
+  
   async generateResponse(prompt: string, nombre: string): Promise<string> {
-
+    
     const response = await this.openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
@@ -30,7 +48,7 @@ export class OpenaiService {
 
     return response.choices[0].message.content;
   }
-
+  
   async generateEmbedding(text: string): Promise<any> {
     const response = await this.openai.embeddings.create({
       model: 'text-embedding-ada-002',
@@ -41,14 +59,27 @@ export class OpenaiService {
     
     return response.data[0].embedding;
   }
+  
+  
 
-  // From ChatbotopenAiService
-  // async genResponse({ prompt, nombre }: Options ) {
+  // Métodos alternativos utilizando ChatOpenAI y OpenAIEmbeddings
 
-  //   const response = await this.openaiService.generateResponse(prompt, nombre);
-
-  //   return { message: response };
+  // async generateChatResponse(prompt: string, nombre: string): Promise<string> {
+  //   const response = await this.llm.generateResponse(prompt, nombre);
+  //   return response;
   // }
 
+  // async generateTextEmbedding(text: string): Promise<any> {
+  //   const embedding = await this.embeddings.vectorize(text);
+  //   return embedding;
+  // }
+  // From ChatbotopenAiService
+  // async genResponse({ prompt, nombre }: Options ) {
+    
+  //   const response = await this.openaiService.generateResponse(prompt, nombre);
+  
+  //   return { message: response };
+  // }
+  
   
 }

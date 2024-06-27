@@ -20,6 +20,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@langchain/community": "^0.2.14",
+    "@langchain/core": "^0.2.10",
+    "@langchain/openai": "^0.2.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.0.0",
@@ -33,6 +36,7 @@
     "class-validator": "^0.14.1",
     "express": "^4.19.2",
     "fs-extra": "^11.2.0",
+    "langchain": "^0.2.7",
     "marked": "^12.0.2",
     "openai": "^4.47.1",
     "pg": "^8.11.5",

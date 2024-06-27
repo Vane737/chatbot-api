@@ -19,6 +19,7 @@ import { InmuebleModule } from './inmueble/inmueble.module';
 import { TwilioModule } from './twilio/twilio.module';
 import { OpenaiModule } from './openai/openai.module';
 import { SupabaseModule } from './supabase/supabase.module';
+import { LangchainModule } from './langchain/langchain.module';
 
 @Module({
   imports: [
@@ -81,6 +82,7 @@ import { SupabaseModule } from './supabase/supabase.module';
     TwilioModule,
     OpenaiModule,
     SupabaseModule,
+    LangchainModule,
   ],
   providers: [TypeOrmModule],
 
