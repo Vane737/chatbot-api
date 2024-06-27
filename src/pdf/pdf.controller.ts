@@ -9,14 +9,7 @@ export class PdfController {
 
   @Post('generate')
   async generatePdf(@Body() data: any, @Res() res: Response): Promise<void> {
-    const pdfBuffer = await this.pdfService.generatePdf(data);
-
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename=confirmacion_cita2.pdf',
-      'Content-Length': pdfBuffer.length,
-    });
-
-    res.end(pdfBuffer);
+    const pdfUrl = await this.pdfService.generatePdf(data);
+    res.json({ url: pdfUrl });
   }
 }
