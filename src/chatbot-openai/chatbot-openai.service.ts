@@ -88,28 +88,25 @@ export class ChatbotOpenaiService {
     }
 
     response = await this.openaiService.generarRespuesta(prompt);
-
     if (bandera === true) {
       await this.consultaService.create('assistant', response, false, conversacion);
     }
 
     if (clave === 'cita' && response.includes('Cita Agendada')) {
-
       jsonResponse = await this.openaiService.numero(response);
-      
-      const desc = await this.supabaseService.getBodyByIdPropiedades(jsonResponse.id_propiedad);
-      
+      let objetoJSON = JSON.parse(jsonResponse);
+      const desc = await this.supabaseService.getBodyByIdPropiedades(objetoJSON.id_propiedad);  
       jsonPropiedad = await this.openaiService.customJson(desc);
-      
+      let objetoJSON2 = JSON.parse(jsonPropiedad);
       const data = {
         nombreAgente: "Ronald Lopez Figueroa",
         numeroAgente: "65068987",
-        descripcion: jsonPropiedad.descripcion, 
-        direccion: jsonPropiedad.lugar,
-        fecha: jsonResponse.fecha,
-        hora: jsonResponse.hora
+        descripcion: objetoJSON2.descripcion, 
+        direccion: objetoJSON2.lugar,
+        fecha: objetoJSON.Fecha,
+        hora: objetoJSON.Hora
       }
-      console.log("Esto me devuelve la funcion numero", jsonResponse.id_propiedad);
+      console.log("Esto me devuelve la funcion numero", objetoJSON.id_propiedad);
 
       const urlPdf = await this.pdfService.generatePdf(data);
       await this.enviarMensajeTwilioPdf(urlPdf, cliente)
