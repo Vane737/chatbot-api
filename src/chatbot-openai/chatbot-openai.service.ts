@@ -21,7 +21,8 @@ export class ChatbotOpenaiService {
     private readonly openaiService: OpenaiService,
     private readonly supabaseService: SupabaseService,
     private readonly conversacionService: ConversacionService,
-    private readonly consultaService: ConsultaService
+    private readonly consultaService: ConsultaService,
+    private readonly pdfService: PdfService
   ) {}
 
  
@@ -73,6 +74,7 @@ export class ChatbotOpenaiService {
     } 
     else if (clave == 'cita') {
       prompt = await this.esCita(text,conversacion); 
+
     } 
     else if (clave == 'historial') {
       prompt = await this.esHistorial(text,conversacion); 
@@ -90,8 +92,11 @@ export class ChatbotOpenaiService {
       await this.consultaService.create('assistant', response, false, conversacion);
     }
 
-    if (clave === 'cita' && response.includes('Cita Agendada')) {      
+    if (clave === 'cita' && response.includes('Cita Agendada')) {
+
       jsonResponse = await this.openaiService.numero(response);
+
+      console.log("Esto me devuelve la funcion numero", jsonResponse);
       return jsonResponse;
     } else {
       console.log(response);
