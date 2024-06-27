@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Conversacion } from './entities/conversacion.entity';
 import { Cliente } from 'src/clientes/entities/cliente.entity';
 import { Consulta } from 'src/consulta/entities/consulta.entity';
+import { ConsultaModule } from 'src/consulta/consulta.module';
 
 
 @Module({
@@ -14,6 +15,8 @@ import { Consulta } from 'src/consulta/entities/consulta.entity';
   controllers: [ConversacionController],
   imports: [
     TypeOrmModule.forFeature([Conversacion,Cliente,Consulta], 'primary'),
+    ConsultaModule
   ],
+  exports: [ConversacionService],
 })
 export class ConversacionModule {}

@@ -12,6 +12,7 @@ import { Conversacion } from 'src/conversacion/entities/conversacion.entity';
   imports: [
     TypeOrmModule.forFeature([Consulta,Conversacion], 'primary'),
   ],
+  exports: [ConsultaService],
  
 })
 export class ConsultaModule {}

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreatePropiedadDto } from './dto/create-propiedad.dto';
 import { PropiedadService } from './propiedad.service';
 
@@ -12,5 +12,14 @@ export class PropiedadController {
         return propiedad;        
     }  
 
+    @Get()
+    findAll(){
+        return this.propiedadService.findAll();
+    }
+
+    @Get('/embedding')
+    embedding(){
+        return this.propiedadService.embedding();
+    }
 
 }

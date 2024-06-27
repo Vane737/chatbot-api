@@ -9,12 +9,12 @@ export class Conversacion{
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'date' })
     fechaInicio: Date;
-
-    @Column({ type: 'timestamp' })
-    fechaFinal: Date;
     
+    @Column({ type: 'date', nullable: true})
+    fechaFinal: Date | null
+
     @ManyToOne(() => Cliente, cliente => cliente.conversaciones)
     cliente: Cliente;
 
