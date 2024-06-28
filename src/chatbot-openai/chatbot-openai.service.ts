@@ -66,7 +66,7 @@ export class ChatbotOpenaiService {
     let bandera: boolean = true;
 
     console.log(clave);
-    if (clave == 'hola') {prompt = 'Saluda al usuario y preguntale que tipo de vivienda esta buscando';}
+    if (clave == 'hola') {prompt = `Saluda al usuario y preguntale que tipo de vivienda esta buscando ${cliente.nombre}`;}
     else if (clave == 'casa') {
       prompt = await this.esCasa(text,conversacion);        
     } 
@@ -93,6 +93,7 @@ export class ChatbotOpenaiService {
     }
 
     if (clave === 'cita' && response.includes('Cita Agendada')) {
+      console.log(response);
       jsonResponse = await this.openaiService.numero(response);
       let objetoJSON = JSON.parse(jsonResponse);
       const desc = await this.supabaseService.getBodyByIdPropiedades(objetoJSON.id_propiedad);  
@@ -147,6 +148,7 @@ export class ChatbotOpenaiService {
       prompt += `
         { role: ${consulta.rol}, content: ${consulta.body}'}
       `;
+    
     }
     prompt += `
         { role: 'system', content: responde a la pregunta del usuario siguiente pregunta del usuario
@@ -174,14 +176,24 @@ export class ChatbotOpenaiService {
       prompt += `
         { role: ${consulta.rol}, content: ${consulta.body}'}
       `;
+
+      
     }
+    const response  = this.openaiService.procesarHistorial(prompt);
+    console.log(response);
+    
     prompt += `
-        { role: 'system', content: esta pidiendo agendar una cita, si el usuario esta diciedo la hora fecha y numero de propiedad,
+        { role: 'system', content: esta pidiendo agendar una cita, 
+         si te dice quiero ir a ver la casa o propiedad, pidele la hora, fecha y de cual propiedad se refiere,
+         si el usuario esta diciedo la hora fecha y numero de propiedad,
         responde con esa hora fecha y la informacion de la propiedad si es que existe en el registro que tienes,el usuario no necesariamente
         pondra los 3 en el mismo mensaje usa el contexto de la informacion guardada hasta que el usuario te pase los 3 datos, 
         si falta algun dato en la pregunta y en la memoria respondele que te pase el que falte,
-        cuando tengas los 3 hora fecha y propiedad, pon al inicio Cita Agendada, siempre luego devuelve la hora en formato 00:00 AM o PM, la fecha en formato dd/mm/aa, estamos en el año 2024
-        la direccion la direccion de la propiedad y luego la propiedad con su descipcion'}
+        cuando tengas los 3 hora, fecha y propiedad y solamente cuando tengas los 3 datos pon al inicio Cita Agendada si 
+        no estan los 3 datos hora, propiedad y fecha definidos no pongas Cita Agendada,luego de que esten los 
+        3 datos hora, fecha y propiedad devuelve la hora en formato 00:00 AM o PM, la fecha en formato dd/mm/aa, 
+        estamos en el año 2024
+        la direccion de la propiedad y luego la propiedad con su descipcion'}
       `;
     prompt += `
         { role: 'user', content: ${text}'}

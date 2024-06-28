@@ -66,7 +66,7 @@ export class OpenaiService {
           role: 'system',
           content: `Eres un asistente virtual para ayudar a comprar o alquilar viviendas 
           como departamentos y casas,eres un buen vender,si te doy varias opciones de 
-          propiedades utiliza las primeras 2 y detalla la mitad de sus caracteristicas`,
+          propiedades utiliza las primeras 2 y detalla la solamente la mitad de sus caracteristicas y un maximo de 1500 caracteres la respuesta`,
         },
         {
           role: 'user',
@@ -78,6 +78,23 @@ export class OpenaiService {
     return response.choices[0].message.content;
 
   }
+
+
+  async procesarHistorial(prompt: string){
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-3.5-turbo-0125',
+      messages: [
+        {
+          role: 'system',
+          content: `Tomando en cuenta el historial de conversaciones determina si se tienen los datos necesario para poder agendar una cita. Los cuales son un id de una propiedad en especifica, una fecha y hora para la reunion, caso contrario respondele al usuario de manera cordial que debe proporcionar estos datos. A continuacion te paso el historial ${prompt}`,
+        },
+      ],
+      temperature: 0.2,
+    });
+    return response.choices[0].message.content;
+
+  }
+
 
   async numero(prompt: string){
     const response = await this.openai.chat.completions.create({
