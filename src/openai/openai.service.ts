@@ -58,6 +58,21 @@ export class OpenaiService {
 
   }
 
+  async procesarHistorial(prompt: string){
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-3.5-turbo-0125',
+      messages: [
+        {
+          role: 'system',
+          content: `Tomando en cuenta el historial de conversaciones determina si se tienen los datos necesario para poder agendar una cita. Los cuales son una propiedad en especifica, una fecha y hora para la reunion, caso contrario respondele al usuario de manera cordial que debe proporcionar estos datos. A continuacion te paso el historial ${prompt}`,
+        },
+      ],
+      temperature: 0.2,
+    });
+    return response.choices[0].message.content;
+
+  }
+
   async generarRespuesta(prompt: string){
     const response = await this.openai.chat.completions.create({
       model: 'gpt-3.5-turbo-0125',

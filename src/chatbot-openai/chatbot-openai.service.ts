@@ -165,7 +165,7 @@ export class ChatbotOpenaiService {
 
 
   async esCita(text: string,conversacion: Conversacion){     
-    var consultas =  await this.consultaService.getConsultas(conversacion); 
+    var consultas =  await this.consultaService.getConsultas(conversacion);
     var prompt = '';
     if(!consultas){
       return 'Tienes que dar primero la descripción de una casa.';
